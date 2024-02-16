@@ -4,9 +4,6 @@ import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
 
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
-// const socket = io('http://localhost:3001', { transports: ['websocket', 'polling'] });
-// const socket = io('http://localhost:3001');
-
 
 const HomePage = () => {
   const [connected, setConnected] = useState(false);

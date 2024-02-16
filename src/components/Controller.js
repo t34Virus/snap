@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-// const socket = io('http://localhost:3001');
-// const socket = io('http://localhost:3001', { transports: ['websocket', 'polling'] });
-// const socket = io(`http://192.168.1.20:3001`, { transports: ['websocket', 'polling'] });
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
 
 const Controller = () => {
@@ -27,7 +24,6 @@ const Controller = () => {
         });
 
         socket.on('viewerConnected', () => {
-          // setImageSrc(imageData);
           setSocketConnected(true)
         })
 
@@ -35,10 +31,7 @@ const Controller = () => {
           setImageSrc(imageData);
         })
 
-        return () => {
-            // socket.off('connect');
-            // socket.off('disconnect');
-        };
+        return () => {};
     }, []);
 
     const capture = () => {
@@ -64,8 +57,6 @@ const Controller = () => {
                 <button onClick={capture}>Capture photo</button>
               )
             }
-
-
         </div>
     );
 };

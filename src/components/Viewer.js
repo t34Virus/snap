@@ -1,15 +1,9 @@
-// Viewer.js
-
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import CustomWebcam from './CustomWebcam';
-// const socket = io('http://localhost:3001', { transports: ['websocket', 'polling'] });
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
-// const socket = io('http://localhost:3001');
 
 const Viewer = () => {
-    // const socket = io(`${window.location.host}:3001`);
-
     const [socketConnected, setSocketConnected] = useState(false);
 
     socket.on('connect', () => {
@@ -23,11 +17,6 @@ const Viewer = () => {
         setSocketConnected(false)
     });
 
-    socket.on('urdad', () => {
-        // setSocketConnected(false)
-        console.log('Viewer is looking at your dad')
-    });
-
     socket.on('connect_error', (error) => {
         console.error('Connection error:', error);
     });
@@ -35,15 +24,8 @@ const Viewer = () => {
     useEffect(() => {
         socket.connect();
 
-        return () => {
-            // socket.disconnect();
-        };
+        return () => {};
     }, []);
-
-    const handleImageUploadSuccess = (imageSrc) => {
-        console.log('imageUploaded!')
-        socket.emit('urmom');
-    };
 
     return (
         <div>
@@ -51,7 +33,7 @@ const Viewer = () => {
                 This is the Viewer and websockets are {socketConnected ? 'connected' : 'not connected'}
             </div>
             <button onClick={ () => window.location.reload()}>Refresh</button>
-            <CustomWebcam onImageUploadSuccess={handleImageUploadSuccess} />
+            <CustomWebcam  />
         </div>
     );
 };
