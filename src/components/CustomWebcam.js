@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import io from 'socket.io-client';
+import '../App.css'
 
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
 
@@ -38,7 +39,7 @@ const CustomWebcam = () => {
 
     useEffect(() => {
         socket.on('capture', capture);
-
+        
         socket.on('retake', () => {
             console.log('retake image!');
             setImgSrc(null);
@@ -52,10 +53,9 @@ const CustomWebcam = () => {
 
     return (
         <div className="container">
-            {imgSrc && 
-                <img src={imgSrc} alt="webcam" />    
-            }
-            <Webcam style={{ opacity: imgSrc ? 0 : 1 }} height={600} width={600} ref={webcamRef} screenshotFormat="image/jpeg" />
+            <Webcam style={{ opacity: imgSrc ? 0 : 1 }} height={1000} width={1000} ref={webcamRef} screenshotFormat="image/jpeg" />
+            {imgSrc && <img src={imgSrc} alt="Captured" className="capturedImage" />}    
+
         </div>
     );
 };

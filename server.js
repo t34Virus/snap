@@ -54,7 +54,6 @@ io.on('connection', (socket) => {
 
     socket.on('capture', () => {
       io.emit('capture');
-
     });
 
     socket.on('retake', () => {
@@ -69,6 +68,11 @@ io.on('connection', (socket) => {
     socket.on('controllerConnected', () => {
       console.log('controllerConnected')
       io.emit('controllerConnected');
+    })
+
+    socket.on('countdown', () => {
+      console.log('countdown')
+      io.emit('countdown');
     })
 
     socket.on('imageUploaded', (imageData) => {
