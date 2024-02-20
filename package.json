@@ -2,6 +2,46 @@
   "name": "react-webcam",
   "version": "0.1.0",
   "private": true,
+  "main": "public/electron.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "node server.js",
+    "dev": "concurrently \"npm start\" \"npm run server\"",
+    "electron-dev": "concurrently \"npm start\" \"npm run server\" \"electron .\"",
+    "electron-pack": "electron-builder build --publish never"
+  },
+  "build": {
+    "appId": "com.yourdomain.reactwebcam",
+    "productName": "Photo Booth",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "build/**/*",
+      "server.js",
+      ".env"
+    ],
+    "extraResources": [
+      "server.js",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/logo512.png"
+    },
+    "mac": {
+      "target": "dmg"
+    }
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "latest",
+    "electron-builder": "latest",
+    "wait-on": "^7.2.0"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -19,20 +59,6 @@
     "socket.io-client": "^4.7.4",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "node server.js",
-    "dev": "concurrently \"npm start\" \"npm run server\""
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -44,8 +70,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
   }
 }

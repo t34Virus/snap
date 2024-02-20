@@ -133,8 +133,10 @@ const Controller = () => {
                         <button className={'defaultButton'} onClick={() => chooseTheme("Action Hero")}>🦸‍♀️ Action Hero 🦸‍♂️</button>
                         <button className={'defaultButton'} onClick={() => chooseTheme("Time Travel")}>⏳ Time Travel ⌛</button>
                         <button className={'defaultButton'} onClick={() => chooseTheme("Holiday")}>🍀 Holiday 🍀</button>
-                        <input className={'input'} value={prompt.theme} onChange={(e) => setPrompt({...prompt, theme: e.target.value})} placeholder={'Input your own'}/>
-                        <button className={'defaultButton'} onClick={() => nextStep()}>Submit Custom</button>
+                        <div className='customInput'>
+                          <input className={'input'} value={prompt.theme} onChange={(e) => setPrompt({...prompt, theme: e.target.value})} placeholder={'Input your own'}/>
+                          <button className={'defaultButton'} onClick={() => nextStep()}>Submit</button>
+                        </div>
                     </div>
                 </div>
             }
