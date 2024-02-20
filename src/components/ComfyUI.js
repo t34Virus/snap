@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { generateUUID } from '../common/utils';
+import { generateUUID, generatePromptData } from '../common/utils';
 
-const ComfyUIWebSocket = () => {
+const ComfyUIWebSocket = ({promptText, triggerPrompt, handleTriggered}) => {
   const ws = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
 
@@ -12,7 +12,7 @@ const ComfyUIWebSocket = () => {
 
     return () => {
       if (ws.current) {
-        ws.current.close();
+        // ws.current.close();
       }
     };
   }, []);
@@ -43,146 +43,33 @@ const ComfyUIWebSocket = () => {
   };
 
   const handleSendPrompt = async () => {
+    handleTriggered();
     if (isConnected && ws.current) {
-      const promptData = {
-        number: Date.now(), 
-        client_id: client_id, 
-        "prompt": {
-          "3": {
-            "inputs": {
-              "seed": 712659071398148,
-              "steps": 20,
-              "cfg": 8,
-              "sampler_name": "euler",
-              "scheduler": "normal",
-              "denoise": 1,
-              "model": [
-                "4",
-                0
-              ],
-              "positive": [
-                "6",
-                0
-              ],
-              "negative": [
-                "7",
-                0
-              ],
-              "latent_image": [
-                "11",
-                0
-              ]
-            },
-            "class_type": "KSampler",
-            "_meta": {
-              "title": "KSampler"
-            }
-          },
-          "4": {
-            "inputs": {
-              "ckpt_name": "v1-5-pruned-emaonly.ckpt"
-            },
-            "class_type": "CheckpointLoaderSimple",
-            "_meta": {
-              "title": "Load Checkpoint"
-            }
-          },
-          "6": {
-            "inputs": {
-              "text": "anime",
-              "clip": [
-                "4",
-                1
-              ]
-            },
-            "class_type": "CLIPTextEncode",
-            "_meta": {
-              "title": "CLIP Text Encode (Prompt)"
-            }
-          },
-          "7": {
-            "inputs": {
-              "text": "",
-              "clip": [
-                "4",
-                1
-              ]
-            },
-            "class_type": "CLIPTextEncode",
-            "_meta": {
-              "title": "CLIP Text Encode (Prompt)"
-            }
-          },
-          "8": {
-            "inputs": {
-              "samples": [
-                "3",
-                0
-              ],
-              "vae": [
-                "4",
-                2
-              ]
-            },
-            "class_type": "VAEDecode",
-            "_meta": {
-              "title": "VAE Decode"
-            }
-          },
-          "9": {
-            "inputs": {
-              "filename_prefix": "ComfyUI",
-              "images": [
-                "8",
-                0
-              ]
-            },
-            "class_type": "SaveImage",
-            "_meta": {
-              "title": "Save Image"
-            }
-          },
-          "10": {
-            "inputs": {
-              "image": "example1.jpg",
-              "upload": "image"
-            },
-            "class_type": "LoadImage",
-            "_meta": {
-              "title": "Load Image"
-            }
-          },
-          "11": {
-            "inputs": {
-              "pixels": [
-                "10",
-                0
-              ],
-              "vae": [
-                "4",
-                2
-              ]
-            },
-            "class_type": "VAEEncode",
-            "_meta": {
-              "title": "VAE Encode"
-            }
-          }
-        }
-      };
+      const promptData = generatePromptData(client_id, promptText.theme, promptText.gender);
   
-    // Sending the prompt data over the WebSocket connection
-    ws.current.send(JSON.stringify(promptData));
-    console.log('Prompt sent successfully via WebSocket');
-  } else {
-    console.log('WebSocket not connected.');
-  }
+      ws.current.send(JSON.stringify(promptData));
+      console.log('Prompt sent successfully via WebSocket');
+    } else {
+      console.log('WebSocket not connected.');
+    }
 
   };
 
+  useEffect(() => {
+    if (triggerPrompt) {
+      handleSendPrompt();
+    }
+  }, [triggerPrompt]);
+  
+  useEffect(() => {
+    if (promptText) {
+      console.log(promptText);
+    }
+  }, [promptText]);
+
   return (
     <div>
-      <button className={'captureButton'} onClick={handleSendPrompt}>Send Prompt to ComfyUI</button>
+      {/* <button className={'captureButton'} onClick={handleSendPrompt}>Send Prompt to ComfyUI</button> */}
     </div>
   );
 };

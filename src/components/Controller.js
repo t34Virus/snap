@@ -7,7 +7,12 @@ const socket = io(`${window.location.protocol}//${window.location.hostname}:3001
 const Controller = () => {
     const [socketConnected, setSocketConnected] = useState(false);
     const [imageSrc, setImageSrc] = useState('');
+    const [displayOutput, setDisplayOutput] = useState(false);
     const [step, setStep] = useState(0);
+    const [prompt, setPrompt] = useState({
+      theme: '',
+      gender: ''
+    });
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -20,7 +25,12 @@ const Controller = () => {
           console.log('new image!')
           setImageSrc(imageData);
           setStep(5);
-      });
+        });
+
+        socket.on('output_completed', (outputImage) => {
+          setDisplayOutput(true);
+          setStep(6);
+        })
 
         socket.on('disconnect', () => {
             console.log('Controller Disconnected from server');
@@ -44,15 +54,35 @@ const Controller = () => {
       setStep(step - 1);
     }
 
-    const countdown = () => {
-        socket.emit('countdown');
+    const chooseTheme = (theme) => {
+      setPrompt(currentPrompt => ({ ...currentPrompt, theme }));
+      nextStep();
+    };
+
+    const chooseGender = (gender) => {
+        setPrompt(currentPrompt => ({ ...currentPrompt, gender }));
         nextStep();
     };
 
+    const countdown = () => {
+      socket.emit('countdown', prompt); 
+      nextStep();
+    };
+
     const retake = (step) => {
-        socket.emit('retake');
-        setImageSrc(null);
-        setStep(step ? step : 1);
+      socket.emit('retake');
+      setImageSrc(null);
+      setStep(step ? step : 1);
+      setPrompt({
+        theme: '',
+        gender: ''
+      })
+      setDisplayOutput(false);
+    };
+
+    const begin = () => {
+      nextStep();
+      socket.emit('retake');
     };
 
     return (
@@ -85,44 +115,44 @@ const Controller = () => {
                   
                   {(socketConnected) &&
                   <>
-                    <button className='startButton' onClick={nextStep}>
+                    <button className='startButton' onClick={begin}>
                       <img src={'../logo512.png'} alt="webcam" />
                       <div>Begin</div>
+                      {/* <img src={'/output/ComfyUI.png'} alt="Captured" className="capturedImage" /> */}
                     </button>
                   </>
                   }
               </div>
             }
             {
-              step === 1 && 
-              <>
+                step === 1 && 
                 <div className='themeContainer'>
-                  <button className='title'>Choose your theme</button>
-                  <div className='themeButtons'>
-                    <button className={'defaultButton'} onClick={nextStep}>🧙‍♀️ Fantasy 🧙‍♂️</button>
-                    <button className={'defaultButton'} onClick={nextStep}>🦸‍♀️ Action Hero 🦸‍♂️</button>
-                    <button className={'defaultButton'} onClick={nextStep}>⏳ Time Travel ⌛</button>
-                    <button className={'defaultButton'} onClick={nextStep}>🍀 Holiday 🍀</button>
-                  </div>
+                    <button className='title'>Choose your theme</button>
+                    <div className='themeButtons'>
+                        <button className={'defaultButton'} onClick={() => chooseTheme("Fantasy")}>🧙‍♀️ Fantasy 🧙‍♂️</button>
+                        <button className={'defaultButton'} onClick={() => chooseTheme("Action Hero")}>🦸‍♀️ Action Hero 🦸‍♂️</button>
+                        <button className={'defaultButton'} onClick={() => chooseTheme("Time Travel")}>⏳ Time Travel ⌛</button>
+                        <button className={'defaultButton'} onClick={() => chooseTheme("Holiday")}>🍀 Holiday 🍀</button>
+                        <input className={'input'} value={prompt.theme} onChange={(e) => setPrompt({...prompt, theme: e.target.value})} placeholder={'Input your own'}/>
+                        <button className={'defaultButton'} onClick={() => nextStep()}>Submit Custom</button>
+                    </div>
                 </div>
-                  <input className={'input'} placeholder={'Input your own'}/>
-              </>
             }
             {
-              step === 2 && 
-              <div className='themeContainer'>
-                <div className='styleButtons'>
-                  <button onClick={nextStep}>
-                    <img src={'../images/him.png'} alt="webcam" />
-                  </button>
-                  <button onClick={nextStep}>
-                    <img src={'../images/her.png'} alt="webcam" />
-                  </button>
-                  <button onClick={nextStep}>
-                    Skip this step
-                  </button>
+                step === 2 && 
+                <div className='themeContainer'>
+                    <div className='styleButtons'>
+                        <button className={'defaultButton'} onClick={() => chooseGender("Male")}>
+                            <img src={'../images/him.png'} alt="Male" />
+                        </button>
+                        <button className={'defaultButton'} onClick={() => chooseGender("Female")}>
+                            <img src={'../images/her.png'} alt="Female" />
+                        </button>
+                        <button className={'defaultButton'} onClick={() => nextStep()}>
+                            Skip this step
+                        </button>
+                    </div>
                 </div>
-              </div>
             }
             {
               step === 3 && 
@@ -137,6 +167,12 @@ const Controller = () => {
             {(imageSrc && step === 5) && (
                 <div className='previewContainer'>
                   <img src={imageSrc} alt="Shared Content" />
+                </div>
+              ) 
+            }
+            {(displayOutput && step === 6) && (
+                <div className='previewContainer'>
+                  <img src={'/output/ComfyUI.png'} alt="Captured" className="capturedImage" />
                   <button className={'captureButton'} onClick={() => retake(3)}>Retake</button>
                 </div>
               ) 
@@ -146,4 +182,4 @@ const Controller = () => {
     );
 };
 
-export default Controller;
+export default React.memo(Controller);

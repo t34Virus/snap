@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const http = require('http');
 const { Server } = require("socket.io");
-
+const fs = require('fs');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3001;
@@ -39,12 +39,53 @@ app.use(cors({
 }));
   
 app.use(express.static(path.join(__dirname, 'build')));
+app.use('/output', express.static(path.join(__dirname, '../output')));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 app.post('/upload', upload.single('image'), (req, res) => {
 res.json({ message: 'Successfully uploaded' });
 });
+
+const outputDirectory = 'C:\\Users\\TROJAN\\Projects\\work\\react-webcam\\public\\output';
+
+function emitOutputCompleted(imagePath) {
+  fs.readFile(imagePath, (err, data) => {
+      if (err) {
+          console.error('Error reading image file:', err);
+          return;
+      }
+      // Assuming the image data is emitted directly; might need to adjust based on actual requirements
+      // On the server, after processing the image
+      const base64Image = data.toString('base64');
+
+        io.emit('output_completed', base64Image);
+  });
+}
+
+fs.watch(outputDirectory, (eventType, filename) => {
+  if (eventType === 'rename') {
+      console.log('New file detected:', filename);
+      const fullPath = path.join(outputDirectory, filename);
+      // Check if the file exists to avoid errors when a file is removed
+      if (fs.existsSync(fullPath)) {
+          emitOutputCompleted(fullPath);
+      }
+  }
+});
+
+function deleteOutput() {
+  fs.readdir(outputDirectory, (err, files) => {
+    if (err) throw err;
+
+    // Loop through and delete each file
+    for (const file of files) {
+      fs.unlink(path.join(outputDirectory, file), err => {
+        if (err) throw err;
+      });
+    }
+  });
+}
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -57,6 +98,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('retake', () => {
+      deleteOutput();
       io.emit('retake');
     });
 
@@ -70,9 +112,10 @@ io.on('connection', (socket) => {
       io.emit('controllerConnected');
     })
 
-    socket.on('countdown', () => {
+    socket.on('countdown', (prompt) => {
       console.log('countdown')
-      io.emit('countdown');
+      deleteOutput();
+      io.emit('countdown', prompt);
     })
 
     socket.on('imageUploaded', (imageData) => {

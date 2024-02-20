@@ -9,6 +9,9 @@ const socket = io(`${window.location.protocol}//${window.location.hostname}:3001
 const CustomWebcam = () => {
     const webcamRef = useRef(null);
     const [imgSrc, setImgSrc] = useState(null);
+    const [promptText, setPromptText] = useState("")
+    const [triggerPrompt, setTriggerPrompt] = useState(false);
+    const displayOutput = useRef(false);
 
     const capture = useCallback(() => {
         if (webcamRef.current) {
@@ -30,6 +33,8 @@ const CustomWebcam = () => {
                     .then(data => {
                         console.log('Success:', data);
                         socket.emit('imageUploaded', imageSrc);
+                        setTriggerPrompt(true);
+
                     })
                     .catch((error) => {
                         console.error('Error:', error);
@@ -38,31 +43,43 @@ const CustomWebcam = () => {
         }
     }, []);
 
+    const handleTriggered = () => {
+        setTriggerPrompt(false);
+    }
+
     useEffect(() => {
         socket.on('capture', capture);
         
         socket.on('retake', () => {
             console.log('retake image!');
             setImgSrc(null);
+            displayOutput.current = false;
         });
 
-        socket.on('countdown', () => {
+        socket.on('countdown', (receivedPrompt) => {
+            setPromptText(receivedPrompt);
             setImgSrc(null);
+            displayOutput.current = false;
         });
 
+        socket.on('output_completed', (outputImage) => {
+            displayOutput.current = true;
+            console.log(outputImage);
+        })
         return () => {
-            socket.off('capture', capture);
-            socket.off('retake');
+            // socket.off('capture', capture);
+            // socket.off('retake');
         };
-    }, [capture]);
+    }, []);
 
     return (
         <div className="container">
-            <ComfyUIWebSocket />
+            <ComfyUIWebSocket promptText={promptText} triggerPrompt={triggerPrompt} handleTriggered={handleTriggered}/>
             <Webcam style={{ opacity: imgSrc ? 0 : 1 }} height={1000} width={1000} ref={webcamRef} screenshotFormat="image/jpeg" />
-            {imgSrc && <img src={imgSrc} alt="Captured" className="capturedImage" />}    
+            {/* {(imgSrc && !displayOutput.current) && <img src={displayOutput.current ? '/output/ComfyUI.png' : imgSrc} alt="Captured" className="capturedImage" />}     */}
+            <img src={imgSrc ? imgSrc : '/output/ComfyUI.png'} alt="Captured" className="capturedImage" />
         </div>
     );
 };
 
-export default CustomWebcam;
+export default React.memo(CustomWebcam);

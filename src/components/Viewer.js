@@ -12,15 +12,14 @@ const Viewer = () => {
     const [showCountdown, setShowCountdown] = useState(false);
     const [triggerCapture, setTriggerCapture] = useState(false);
 
-    useEffect(() => {
-        if (triggerCapture) {
-            socket.emit('capture');
-            setTriggerCapture(false);
-            setShowCountdown(false);
-            setCountdown(5);
-        }
-        return () => {};
-    }, [triggerCapture]);
+    // useEffect(() => {
+    //     if (triggerCapture) {
+    //         setTriggerCapture(false);
+    //         setShowCountdown(false);
+    //         setCountdown(5);
+    //     }
+    //     return () => {};
+    // }, [triggerCapture]);
 
     useEffect(() => {
         socket.connect();
@@ -44,14 +43,23 @@ const Viewer = () => {
             setSocketConnected(true)
             console.log('controllerConnected');
         })
-    
+
+        socket.on('output_completed', (outputImage) => {
+            if (triggerCapture) {
+                setTriggerCapture(false);
+                setShowCountdown(false);
+                setCountdown(5);
+            }
+        })
+
         socket.on('countdown', () => {
             clearInterval(countdownInterval.current);
             let counter = countdown;
             setShowCountdown(true);
+            socket.emit('capture');
             countdownInterval.current = setInterval(() => {
                 counter--
-                if (counter <= 0) {
+                if (counter <= -1) {
                     clearInterval(countdownInterval.current);
                     console.log('emitting capture');
                     setTriggerCapture(true);
@@ -61,23 +69,21 @@ const Viewer = () => {
         })
 
         return () => {};
-    }, [countdown]);
+    }, []);
 
     return (
         <>
             <div className='viewerContainer'>
-                {socketConnected &&
                 <div className='webcamContainer'>
                     {showCountdown &&
                         <div className='countdown'>
                             <p>
-                                {countdown}
+                                {countdown >= 0 ? countdown : 'Processing...'}
                             </p>
                         </div>
                     }
                     <CustomWebcam  />
                 </div>
-                }
             </div>
         </>
     );
