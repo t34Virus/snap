@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import io from 'socket.io-client';
 import '../App.css'
+import ComfyUIWebSocket from './ComfyUI';
 
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
 
@@ -45,6 +46,10 @@ const CustomWebcam = () => {
             setImgSrc(null);
         });
 
+        socket.on('countdown', () => {
+            setImgSrc(null);
+        });
+
         return () => {
             socket.off('capture', capture);
             socket.off('retake');
@@ -53,9 +58,9 @@ const CustomWebcam = () => {
 
     return (
         <div className="container">
+            <ComfyUIWebSocket />
             <Webcam style={{ opacity: imgSrc ? 0 : 1 }} height={1000} width={1000} ref={webcamRef} screenshotFormat="image/jpeg" />
             {imgSrc && <img src={imgSrc} alt="Captured" className="capturedImage" />}    
-
         </div>
     );
 };

@@ -130,8 +130,8 @@ const Controller = () => {
             }
             {
               step === 4 && 
-                <div className='captureButton'>
-                  Counting down...
+                <div className='countdownText'>
+                    Counting down...
                 </div>
             }
             {(imageSrc && step === 5) && (
