@@ -1,0 +1,72 @@
+
+/* SimpleCms.module.css or App.css */
+.simpleCmsForm {
+    font-size: 12px;
+    color: white;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow-y: scroll;
+    flex-direction: column;
+    gap: 10px; /* Adjust space between each asset */
+    margin: 10px;
+  }
+  
+  .assetContainer {
+    background-color: #222; /* Slightly lighter than black for contrast */
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .assetTitle {
+    color: #e0e0e0; /* Light grey for the asset titles */
+    margin-bottom: 15px;
+  }
+  
+  .label {
+    display: block; /* Make each label+input pair block-level for vertical stacking */
+    margin: 10px; /* Adjust space between each label+input pair */
+  }
+  
+  .input {
+    padding: 8px;
+    font-size: 12px;
+    width: fit-content; /* Make input take full width of its container */
+    box-sizing: border-box; /* Include padding and border in the input's width */
+    margin-top: 5px;
+    margin-left: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc; /* Light grey border for inputs */
+  }
+
+  .input.array {
+    width: 90%;
+  }
+  
+  .submitButton {
+    padding: 10px 10px;
+    background-color: #007bff; /* Bootstrap primary button color for reference */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100px; /* Or 'auto' depending on your design */
+    align-self: center; /* Center the button if the form is flex */
+  }
+  
+  .submitButton:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  /* Additional CSS rules in SimpleCms.css */
+  .nestedFieldContainer {
+    margin-left: 10px; /* Indent nested fields for visual hierarchy */
+    border-left: 2px solid #666; /* Optional border to distinguish nested fields */
+    padding-left: 10px;
+  }
+  
+  /* Adjust the .fieldContainer if needed */
+  .fieldContainer {
+    margin-bottom: 10px;
+  }
+  

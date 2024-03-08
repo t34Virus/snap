@@ -11,6 +11,7 @@ const CustomWebcam = () => {
     const [imgSrc, setImgSrc] = useState(null);
     const [promptText, setPromptText] = useState("")
     const [triggerPrompt, setTriggerPrompt] = useState(false);
+    const [resetImage, setResetImage] = useState(false);
     const displayOutput = useRef(false);
 
     const capture = useCallback(() => {
@@ -53,6 +54,7 @@ const CustomWebcam = () => {
         socket.on('retake', () => {
             console.log('retake image!');
             setImgSrc(null);
+            setResetImage(true);
             displayOutput.current = false;
         });
 
@@ -60,6 +62,7 @@ const CustomWebcam = () => {
             setPromptText(receivedPrompt);
             setImgSrc(null);
             displayOutput.current = false;
+            setResetImage(false);
         });
 
         socket.on('output_completed', (outputImage) => {
@@ -76,8 +79,11 @@ const CustomWebcam = () => {
         <div className="container">
             <ComfyUIWebSocket promptText={promptText} triggerPrompt={triggerPrompt} handleTriggered={handleTriggered}/>
             <Webcam style={{ opacity: imgSrc ? 0 : 1 }} height={1000} width={1000} ref={webcamRef} screenshotFormat="image/jpeg" />
-            {/* {(imgSrc && !displayOutput.current) && <img src={displayOutput.current ? '/output/ComfyUI.png' : imgSrc} alt="Captured" className="capturedImage" />}     */}
-            <img src={imgSrc ? imgSrc : '/output/ComfyUI.png'} alt="Captured" className="capturedImage" />
+            <img style={{opacity: resetImage ? 0 : 1}} src={imgSrc ? imgSrc : '/output/ComfyUI.png'} alt="Captured" className="capturedImage" />
+            {
+                imgSrc && 
+                <img style={{opacity: resetImage ? 0 : 1}} src={imgSrc} alt="Captured" className="capturedImage" />
+            }
         </div>
     );
 };

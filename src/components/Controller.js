@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import '../App.css';
+import CMS from '../common/cms.json'
 
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
 
@@ -16,7 +17,7 @@ const Controller = () => {
 
     useEffect(() => {
         socket.on('connect', () => {
-            console.log('Controller connected from server');
+            console.log('Controller connected from servers');
             socket.emit('controllerConnected');
             setSocketConnected(true)
         });
@@ -116,8 +117,8 @@ const Controller = () => {
                   {(socketConnected) &&
                   <>
                     <button className='startButton' onClick={begin}>
-                      <img src={'../logo512.png'} alt="webcam" />
-                      <div>Begin</div>
+                      <img src={CMS.assets['Start Button'].imagePath} alt="webcam" />
+                      <div>{CMS.assets['Start Button'].title}</div>
                       {/* <img src={'/output/ComfyUI.png'} alt="Captured" className="capturedImage" /> */}
                     </button>
                   </>
@@ -127,12 +128,13 @@ const Controller = () => {
             {
                 step === 1 && 
                 <div className='themeContainer'>
-                    <button className='title'>Choose your theme</button>
+                    <button className='title'>{CMS.assets['Theme Button'].title}</button>
                     <div className='themeButtons'>
-                        <button className={'defaultButton'} onClick={() => chooseTheme("Fantasy")}>🧙‍♀️ Fantasy 🧙‍♂️</button>
-                        <button className={'defaultButton'} onClick={() => chooseTheme("Action Hero")}>🦸‍♀️ Action Hero 🦸‍♂️</button>
-                        <button className={'defaultButton'} onClick={() => chooseTheme("Time Travel")}>⏳ Time Travel ⌛</button>
-                        <button className={'defaultButton'} onClick={() => chooseTheme("Holiday")}>🍀 Holiday 🍀</button>
+                      {CMS.assets['Theme Button'].buttons.map((button) =>
+                        <button
+                          className={'defaultButton'} onClick={() => chooseTheme(button.title)}
+                        >{button.title}</button>
+                      )}
                         <div className='customInput'>
                           <input className={'input'} value={prompt.theme} onChange={(e) => setPrompt({...prompt, theme: e.target.value})} placeholder={'Input your own'}/>
                           <button className={'defaultButton'} onClick={() => nextStep()}>Submit</button>
@@ -141,17 +143,20 @@ const Controller = () => {
                 </div>
             }
             {
-                step === 2 && 
+              step === 2 && 
                 <div className='themeContainer'>
                     <div className='styleButtons'>
-                        <button className={'defaultButton'} onClick={() => chooseGender("Male")}>
-                            <img src={'../images/him.png'} alt="Male" />
-                        </button>
-                        <button className={'defaultButton'} onClick={() => chooseGender("Female")}>
-                            <img src={'../images/her.png'} alt="Female" />
-                        </button>
+                        {Object.entries(CMS.assets['Gender Buttons']).map(([gender, imagePath]) =>
+                            <button
+                                key={gender}
+                                className={'defaultButton'} 
+                                onClick={() => chooseGender(gender)}
+                            >
+                                <img src={imagePath} alt={gender.charAt(0).toUpperCase() + gender.slice(1)} />
+                            </button>
+                        )}
                         <button className={'defaultButton'} onClick={() => nextStep()}>
-                            Skip this step
+                          {CMS.assets['Skip Button'].title}
                         </button>
                     </div>
                 </div>

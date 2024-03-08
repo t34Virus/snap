@@ -23,6 +23,10 @@ const HomePage = () => {
       setConnected(false);
       socket.connect();
     });
+    
+    socket.on('retake', () => {
+      console.log('retake image!');
+    });
 
     return () => {
       // socket.off('connect');

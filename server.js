@@ -47,6 +47,28 @@ app.post('/upload', upload.single('image'), (req, res) => {
 res.json({ message: 'Successfully uploaded' });
 });
 
+const cmsFilePath = path.join(__dirname, 'src/common/cms.json');
+
+function writeCMSFile(data) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(cmsFilePath, JSON.stringify(data, null, 2), 'utf8', (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+}
+
+app.post('/api/update', express.json(), async (req, res) => {
+  try {
+    const newData = req.body; // The new buttons data from the frontend
+    await writeCMSFile(newData); // Write the new data to cms.json
+    res.send('Data updated successfully');
+  } catch (err) {
+    console.error('Error writing file:', err);
+    res.status(500).send('Error saving data');
+  }
+});
+
 const outputDirectory = 'C:\\Users\\TROJAN\\Projects\\work\\react-webcam\\public\\output';
 
 function emitOutputCompleted(imagePath) {
@@ -127,3 +149,4 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Backend server listening at ${process.env.REACT_APP_SERVER_IP}:${port}`);
 });
+

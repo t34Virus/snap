@@ -1,0 +1,50 @@
+{
+  "assets": {
+    "Start Button": {
+      "title": "Begins",
+      "imagePath": "logo512.png"
+    },
+    "Theme Button": {
+      "title": "Choose your themes",
+      "buttons": [
+        {
+          "title": "Fantasy",
+          "imagePath": "logo512.png"
+        },
+        {
+          "title": "Action Heros",
+          "imagePath": "logo512.png"
+        },
+        {
+          "title": "Time Travel",
+          "imagePath": "logo512.png"
+        },
+        {
+          "title": "Holiday",
+          "imagePath": "logo512.png"
+        },
+        {
+          "title": "Preset",
+          "imagePath": "logo512.png"
+        },
+        {
+          "title": "Preset",
+          "imagePath": "logo512.png"
+        },
+        {
+          "title": "Another Preset",
+          "imagePath": "logo512.png"
+        }
+      ],
+      "input": "Input your own",
+      "Submit Button": "Submit"
+    },
+    "Gender Buttons": {
+      "male": "images/him.png",
+      "female": "images/him.png"
+    },
+    "Skip Button": {
+      "title": "Skip this step"
+    }
+  }
+}
