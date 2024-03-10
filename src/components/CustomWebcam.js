@@ -14,6 +14,12 @@ const CustomWebcam = () => {
     const [resetImage, setResetImage] = useState(false);
     const displayOutput = useRef(false);
 
+    const videoConstraints = {
+        width: 1920,
+        height: 1080,
+        facingMode: "user", 
+    };
+
     const capture = useCallback(() => {
         if (webcamRef.current) {
             const imageSrc = webcamRef.current.getScreenshot();
@@ -34,7 +40,6 @@ const CustomWebcam = () => {
                     .then(data => {
                         console.log('Success:', data);
                         socket.emit('imageUploaded', imageSrc);
-                        setTriggerPrompt(true);
 
                     })
                     .catch((error) => {
@@ -69,6 +74,11 @@ const CustomWebcam = () => {
             displayOutput.current = true;
             console.log(outputImage);
         })
+
+        socket.on('confirm', () => {
+            setTriggerPrompt(true);
+        })
+
         return () => {
             // socket.off('capture', capture);
             // socket.off('retake');
@@ -76,13 +86,22 @@ const CustomWebcam = () => {
     }, []);
 
     return (
-        <div className="container">
+        <div className="container" height="100vh" width="100vw">
             <ComfyUIWebSocket promptText={promptText} triggerPrompt={triggerPrompt} handleTriggered={handleTriggered}/>
-            <Webcam style={{ opacity: imgSrc ? 0 : 1 }} height={1000} width={1000} ref={webcamRef} screenshotFormat="image/jpeg" />
-            <img style={{opacity: resetImage ? 0 : 1}} src={imgSrc ? imgSrc : '/output/ComfyUI.png'} alt="Captured" className="capturedImage" />
+            
+            <Webcam
+                audio={false}
+                height={'1080'}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                width={'1920'}
+                videoConstraints={videoConstraints}
+                style={{ position: 'absolute', top: 0, left: 0 }}
+            />
+
             {
                 imgSrc && 
-                <img style={{opacity: resetImage ? 0 : 1}} src={imgSrc} alt="Captured" className="capturedImage" />
+                <img style={{ position: 'absolute', top: 0, left: 0, opacity: resetImage ? 0 : 1}} src={imgSrc} alt="Captured" className="capturedImage"/>
             }
         </div>
     );

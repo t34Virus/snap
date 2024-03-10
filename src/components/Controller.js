@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import '../App.css';
 import CMS from '../common/cms.json'
+import Modal from './atoms/ModalComponent';
 
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
 
@@ -14,6 +15,21 @@ const Controller = () => {
       theme: '',
       gender: ''
     });
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+
+    const closeModal = (modalPrompt) => {
+      // setPrompt(modalPrompt);
+      setPrompt({...prompt, theme: modalPrompt})
+      console.log('Input modal value: ', modalPrompt)
+      nextStep();
+      setIsModalOpen(false);
+    };
+
+    const exitModal = () => {
+      setIsModalOpen(false);
+    }
 
     useEffect(() => {
         socket.on('connect', () => {
@@ -69,6 +85,10 @@ const Controller = () => {
       socket.emit('countdown', prompt); 
       nextStep();
     };
+
+    const confirm = () => {
+      socket.emit('confirm'); 
+    }
 
     const retake = (step) => {
       socket.emit('retake');
@@ -128,16 +148,19 @@ const Controller = () => {
             {
                 step === 1 && 
                 <div className='themeContainer'>
-                    <button className='title'>{CMS.assets['Theme Button'].title}</button>
+                    <button className='title'>{CMS.assets['Theme Buttons'].title}</button>
                     <div className='themeButtons'>
-                      {CMS.assets['Theme Button'].buttons.map((button) =>
+                      {CMS.assets['Theme Buttons'].buttons.map((button, index) =>
                         <button
-                          className={'defaultButton'} onClick={() => chooseTheme(button.title)}
-                        >{button.title}</button>
+                          key={`themeButtons${index}`}
+                          className={''} onClick={() => chooseTheme(button.title)}
+                        >
+                          <img src={button.imagePath} alt="webcam" />
+                        </button>
                       )}
                         <div className='customInput'>
-                          <input className={'input'} value={prompt.theme} onChange={(e) => setPrompt({...prompt, theme: e.target.value})} placeholder={'Input your own'}/>
-                          <button className={'defaultButton'} onClick={() => nextStep()}>Submit</button>
+                          {/* <input className={'input'} value={prompt.theme} onChange={(e) => setPrompt({...prompt, theme: e.target.value})} placeholder={CMS.assets['Theme Button'].input}/> */}
+                          <button className={'defaultButton input'} onClick={openModal}>{CMS.assets['Theme Buttons']['Submit Button']}</button>
                         </div>
                     </div>
                 </div>
@@ -163,28 +186,35 @@ const Controller = () => {
             }
             {
               step === 3 && 
-                <button className='captureButton' onClick={countdown}>Capture</button>
+                <button className='captureButton' onClick={countdown}>
+                  <img src={CMS.assets['Capture Button'].imagePath} alt={CMS.assets['Capture Button'].title} />
+                </button>
             }
             {
               step === 4 && 
                 <div className='countdownText'>
-                    Counting down...
+                    {CMS.assets['Countdown'].title}
                 </div>
             }
             {(imageSrc && step === 5) && (
                 <div className='previewContainer'>
                   <img src={imageSrc} alt="Shared Content" />
+                  <div>
+                    <button className={'defaultButton'} onClick={confirm}>{CMS.assets['Confirm Button'].title}</button>
+                    <button className={'defaultButton'} onClick={() => retake(3)}>{CMS.assets['Retake Button'].title}</button>
+                  </div>
                 </div>
               ) 
             }
             {(displayOutput && step === 6) && (
                 <div className='previewContainer'>
                   <img src={'/output/ComfyUI.png'} alt="Captured" className="capturedImage" />
-                  <button className={'captureButton'} onClick={() => retake(3)}>Retake</button>
                 </div>
               ) 
             }
         </div>
+        <Modal isOpen={isModalOpen} onClose={closeModal} exit={exitModal} />
+
       </>
     );
 };

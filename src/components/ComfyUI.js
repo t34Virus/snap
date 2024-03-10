@@ -45,9 +45,15 @@ const ComfyUIWebSocket = ({promptText, triggerPrompt, handleTriggered}) => {
   const handleSendPrompt = async () => {
     handleTriggered();
     if (isConnected && ws.current) {
-      const promptData = generatePromptData(client_id, promptText.theme, promptText.gender);
+      const promptData1 = generatePromptData(client_id, 'Action Heroes', promptText.gender);
+      const promptData2 = generatePromptData(client_id, 'Fantasy', promptText.gender);
   
-      ws.current.send(JSON.stringify(promptData));
+      ws.current.send(JSON.stringify(promptData1));
+
+      // setTimeout(() => {
+      //   ws.current.send(JSON.stringify(promptData2));
+
+      // },5000)
       console.log('Prompt sent successfully via WebSocket');
     } else {
       console.log('WebSocket not connected.');

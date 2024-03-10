@@ -12,15 +12,6 @@ const Viewer = () => {
     const [showCountdown, setShowCountdown] = useState(false);
     const [triggerCapture, setTriggerCapture] = useState(false);
 
-    // useEffect(() => {
-    //     if (triggerCapture) {
-    //         setTriggerCapture(false);
-    //         setShowCountdown(false);
-    //         setCountdown(5);
-    //     }
-    //     return () => {};
-    // }, [triggerCapture]);
-
     useEffect(() => {
         socket.connect();
 
@@ -29,6 +20,12 @@ const Viewer = () => {
             socket.emit('viewerConnected');
             setSocketConnected(true)
         });
+
+        socket.on('retake', () => {
+            setTriggerCapture(false);
+            setShowCountdown(false);
+            setCountdown(5);            
+        })
     
         socket.on('disconnect', () => {
             console.log('Viewer disconnected from server');
@@ -54,15 +51,15 @@ const Viewer = () => {
 
         socket.on('countdown', () => {
             clearInterval(countdownInterval.current);
-            let counter = countdown;
+            let counter = 5;
             setShowCountdown(true);
-            socket.emit('capture');
             countdownInterval.current = setInterval(() => {
                 counter--
                 if (counter <= -1) {
                     clearInterval(countdownInterval.current);
                     console.log('emitting capture');
                     setTriggerCapture(true);
+                    socket.emit('capture');
                 }
                 setCountdown(counter);
             },1000)
@@ -76,7 +73,7 @@ const Viewer = () => {
             <div className='viewerContainer'>
                 <div className='webcamContainer'>
                     {showCountdown &&
-                        <div className='countdown'>
+                        <div className={`countdown ${countdown === 1 ? 'flash' : ''}`}>
                             <p>
                                 {countdown >= 0 ? countdown : 'Processing...'}
                             </p>

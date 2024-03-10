@@ -58,6 +58,20 @@ function writeCMSFile(data) {
   });
 }
 
+const imagesDirectory = 'C:\\Users\\TROJAN\\Projects\\work\\react-webcam\\public\\images';
+
+function getImages() {
+  const fullPath = path.join(imagesDirectory);
+  console.log(fullPath);
+  fs.readdir(fullPath, (err, files) => {
+    if (err) {
+      console.log(err);
+    }
+    const images = files.filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file));
+    io.emit('imageList', images);
+  });
+}
+
 app.post('/api/update', express.json(), async (req, res) => {
   try {
     const newData = req.body; // The new buttons data from the frontend
@@ -119,6 +133,10 @@ io.on('connection', (socket) => {
       io.emit('capture');
     });
 
+    socket.on('confirm', () => {
+      io.emit('confirm');
+    });
+
     socket.on('retake', () => {
       deleteOutput();
       io.emit('retake');
@@ -134,6 +152,11 @@ io.on('connection', (socket) => {
       io.emit('controllerConnected');
     })
 
+    socket.on('cmsConnected', () => {
+      console.log('cmsConnected')
+      io.emit('cmsConnected');
+    })
+
     socket.on('countdown', (prompt) => {
       console.log('countdown')
       deleteOutput();
@@ -144,6 +167,10 @@ io.on('connection', (socket) => {
       console.log('new image received!')
       io.emit('newImage', imageData);
     });
+
+    socket.on('getImages', () => {
+      getImages();
+    })
 });
 
 server.listen(port, () => {

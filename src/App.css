@@ -53,7 +53,7 @@ video {
 
 .viewerContainer {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
 }
 
@@ -75,19 +75,19 @@ video {
   justify-content: center;
   align-items: center;
   background-color: black;
-  border: none; /* Use 'none' instead of 'black' to remove the border */
+  border: none; 
   cursor: pointer;
 }
 
 .startButton img {
-  max-width: 50%; /* Ensure the image scales correctly */
+  max-width: 100%;
   height: auto;
 }
 
 .startButton div {
   font-size: 46px;
   padding-top: 10%;
-  color: white; /* Adjust text color as needed */
+  color: white; 
 }
 
 .themeContainer {
@@ -100,24 +100,32 @@ video {
 
 .themeButtons {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Creates two columns */
-  grid-gap: 8vw; /* Adjust the gap between buttons as needed */
-  width: 80vw; /* Takes full width of its container */
-  height: 80vw; /* Takes full height of its container */
-  padding: 5vw; /* Adjust padding as needed */
+  grid-template-columns: repeat(2, 1fr); 
+  grid-gap: 8vw; 
+  width: 80vw; 
+  height: 70vh; 
+  padding: 5vw; 
 }
 
 .themeButtons button {
-  width: 100%; /* Ensures buttons take full width of the grid cell */
-  height: 100%; /* Ensures buttons take full height of the grid cell */
-  font-size: 1.5em; /* Adjust based on your design needs */
+  width: 100%; 
+  height: auto; 
+  font-size: 1.5em; 
+  border: none;
+  background-color: black;
+  overflow: hidden;
+}
+
+.themeButtons button img{
+  max-width: 100%;
+  height: auto;
 }
 
 .styleButtons {
   display: grid;
-  grid-template-columns: repeat(1, 1fr); /* Creates two columns */
-  width: 100%; /* Takes full width of its container */
-  height: 100%; /* Takes full height of its container */
+  grid-template-columns: repeat(1, 1fr); 
+  width: 100%; 
+  height: 100%; 
 }
 
 .styleButtons button {
@@ -127,7 +135,7 @@ video {
   font-size: 24px;
 }
 
-.defaultButton, .captureButton {
+.defaultButton, .defaultButton.input {
   background-color: #FFFC00;
   border: none;
   color: black;
@@ -143,11 +151,11 @@ video {
   align-items: center;
   place-items: center;
   grid-gap: 20px; 
-  bottom: 5.5vh;
+  bottom: 3vh;
 }
 
 .customInput button {
-  width: 25%;
+  width: 50%;
 }
 
 .customInput, .title {
@@ -156,11 +164,11 @@ video {
 }
 
 .title {
-  top: 10.5vh;
+  top: 5.5vh;
   color: white;
   background-color: black;
   border: none;
-  font-size: 40px;
+  font-size: 60px;
 }
 
 .input {
@@ -171,9 +179,11 @@ video {
 
 .captureButton {
   font-size: 60px;
-  width: 50%;
+  width: 100%;
   justify-content: center;
   align-items: center;
+  border: none;
+  background-color: black;
 }
 
 .header {
@@ -185,14 +195,13 @@ video {
   z-index: 2;
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Optional, if you want to vertically center the buttons */
+  align-items: center; 
 }
 
 .headerButton {
-  /* Button specific styles here */
   padding: 10px;
   border: none;
-  background-color: transparent; /* Example style, adjust as needed */
+  background-color: transparent; 
   cursor: pointer;
   color: white;
   font-size: 20px;
@@ -220,12 +229,16 @@ video {
   position: absolute;
   display: flex;
   height: 100vh;
-  width: 100%;
+  width: 100vw;
   background-color: rgba(0,0,0,0.5);
   justify-content: center;
   align-items: center;
   place-items: center;
   z-index: 2;
+}
+
+.countdown.flash {
+  background-color: rgba(255,255,255,1);
 }
 
 .countdown p, .countdownText {
@@ -253,8 +266,72 @@ video {
   position: absolute;
   top: 2.5vh;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   z-index: 1;
   object-fit: cover;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.modal-content {
+  background-color: black;
+  position: relative;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  height: 25%;
+  width: 50%;
+  display: grid;
+  align-items: center;
+  grid-template-rows: repeat(2, 1fr); 
+}
+
+.modal-content input {
+  height: 80%;
+  width: 95%;
+  text-align: center;
+  font-size: 20px;
+}
+
+.modal-content .submit {
+  height: auto;
+  width: 50%;
+  margin: auto;
+}
+
+.modal-title {
+  color: white;
+}
+
+.closeModalButton {
+  background-color: #FFFC00;
+  position: absolute;
+  top: -2vw;
+  right: -2vw;
+  font-weight: 800;
+  border-radius: 100%;
+  font-size: 2.5vw;
+  width: 4vw;
+  height: 4vw;
+}
+
+.thumbnail {
+  height: 10vw;
+  width: auto;
+}
+
+.thumbnail:hover {
+  cursor: pointer;
 }

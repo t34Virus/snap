@@ -1,50 +1,50 @@
 {
   "assets": {
     "Start Button": {
-      "title": "Begins",
-      "imagePath": "logo512.png"
-    },
-    "Theme Button": {
-      "title": "Choose your themes",
-      "buttons": [
-        {
-          "title": "Fantasy",
-          "imagePath": "logo512.png"
-        },
-        {
-          "title": "Action Heros",
-          "imagePath": "logo512.png"
-        },
-        {
-          "title": "Time Travel",
-          "imagePath": "logo512.png"
-        },
-        {
-          "title": "Holiday",
-          "imagePath": "logo512.png"
-        },
-        {
-          "title": "Preset",
-          "imagePath": "logo512.png"
-        },
-        {
-          "title": "Preset",
-          "imagePath": "logo512.png"
-        },
-        {
-          "title": "Another Preset",
-          "imagePath": "logo512.png"
-        }
-      ],
-      "input": "Input your own",
-      "Submit Button": "Submit"
+      "imagePath": "images/tap_to_begin.png"
     },
     "Gender Buttons": {
       "male": "images/him.png",
-      "female": "images/him.png"
+      "female": "images/her.png"
     },
     "Skip Button": {
       "title": "Skip this step"
+    },
+    "Capture Button": {
+      "title": "Capture",
+      "imagePath": "images/tap_to_capture.png"
+    },
+    "Countdown": {
+      "title": "Counting down..."
+    },
+    "Retake Button": {
+      "title": "Retake"
+    },
+    "Confirm Button": {
+      "title": "Confirm"
+    },
+    "Theme Buttons": {
+      "title": "Please Select One",
+      "buttons": [
+        {
+          "title": "Carnival Parade",
+          "imagePath": "images/carnival_parade.png"
+        },
+        {
+          "title": "Mardi Gras",
+          "imagePath": "images/mardi_gras.png"
+        },
+        {
+          "title": "Ski Resort",
+          "imagePath": "images/ski_resort.png"
+        },
+        {
+          "title": "Black and White",
+          "imagePath": "images/classic_hollywood.png"
+        }
+      ],
+      "input": "Ex: Gladiator, Deep Sea Diving, Paris",
+      "Submit Button": "Enter Your Own Prompt"
     }
   }
 }
