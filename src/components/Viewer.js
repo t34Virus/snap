@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import CustomWebcam from './CustomWebcam';
 import '../App.css'
+import CMS from '../common/cms.json'
+import { useNavigate } from 'react-router-dom';
 
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
 
@@ -11,6 +13,7 @@ const Viewer = () => {
     const [countdown, setCountdown] = useState(5);
     const [showCountdown, setShowCountdown] = useState(false);
     const [triggerCapture, setTriggerCapture] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         socket.connect();
@@ -65,6 +68,12 @@ const Viewer = () => {
             },1000)
         })
 
+        socket.on('confirm', () => {
+            setTimeout(() => {
+                navigate('/gallery', {state: {from: 'viewer'}});
+            }, 2500)
+        })
+
         return () => {};
     }, []);
 
@@ -73,9 +82,9 @@ const Viewer = () => {
             <div className='viewerContainer'>
                 <div className='webcamContainer'>
                     {showCountdown &&
-                        <div className={`countdown ${countdown === 1 ? 'flash' : ''}`}>
+                        <div className={`countdown ${countdown === 1 || countdown === 0 ? 'flash' : ''}`}>
                             <p>
-                                {countdown >= 0 ? countdown : 'Processing...'}
+                                {countdown >= 0 ? countdown : CMS.assets['Processing'].title}
                             </p>
                         </div>
                     }

@@ -6,6 +6,7 @@ import Viewer from './components/Viewer';
 // import CustomWebcam from './components/CustomWebcam';
 import Controller from './components/Controller';
 import SimpleCms from './components/SimpleCms';
+import Gallery from './components/Gallery';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/controller" element={<Controller />} />
         <Route path="/viewer" element={<Viewer />} />
         <Route path="/cms" element={<SimpleCms />} />
+        <Route path="/gallery" element={<Gallery />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </BrowserRouter>

@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import '../App.css';
 import CMS from '../common/cms.json'
 import Modal from './atoms/ModalComponent';
+import { useNavigate } from 'react-router-dom';
 
 const socket = io(`${window.location.protocol}//${window.location.hostname}:3001`, { transports: ['websocket', 'polling'] });
 
@@ -16,6 +17,7 @@ const Controller = () => {
       gender: ''
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
 
     const openModal = () => setIsModalOpen(true);
 
@@ -51,7 +53,7 @@ const Controller = () => {
 
         socket.on('disconnect', () => {
             console.log('Controller Disconnected from server');
-            setSocketConnected(false);
+            // setSocketConnected(false);
             setStep(0);
         });
 
@@ -88,6 +90,9 @@ const Controller = () => {
 
     const confirm = () => {
       socket.emit('confirm'); 
+      setTimeout(() => {
+        navigate('/gallery', {state: {from: 'controller'}});
+      }, 2500)
     }
 
     const retake = (step) => {
@@ -125,7 +130,7 @@ const Controller = () => {
         <div className='controllerContainer'>
             { step === 0 && 
               <div style={{fontSize: '30px', color: 'white'}}>
-                {!socketConnected && 
+                {/* {!socketConnected && 
                 <div>
                   <p>
                   This is the Controller and websockets are not connected
@@ -134,7 +139,7 @@ const Controller = () => {
                 </div>
                 }
                   
-                  {(socketConnected) &&
+                  {(socketConnected) && */}
                   <>
                     <button className='startButton' onClick={begin}>
                       <img src={CMS.assets['Start Button'].imagePath} alt="webcam" />
@@ -142,7 +147,7 @@ const Controller = () => {
                       {/* <img src={'/output/ComfyUI.png'} alt="Captured" className="capturedImage" /> */}
                     </button>
                   </>
-                  }
+                  {/* } */}
               </div>
             }
             {

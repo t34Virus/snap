@@ -17,6 +17,10 @@
     "Countdown": {
       "title": "Counting down..."
     },
+    "Processing": {
+      "title": "Processing...",
+      "imagePath": "images/generating.png"
+    },
     "Retake Button": {
       "title": "Retake"
     },

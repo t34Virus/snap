@@ -19,7 +19,7 @@ const Modal = ({ isOpen, onClose, children, exit }) => {
         <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className='closeModalButton' onClick={exit}>✕</button>
             {children}
-            <input type={'text'} className={'input'} value={prompt.theme} onChange={handleInputChange} placeholder={CMS.assets['Theme Button'].input}/>
+            <input type={'text'} className={'input'} value={prompt.theme} onChange={handleInputChange} placeholder={CMS.assets['Theme Buttons'].input}/>
             <button className={'defaultButton submit'} onClick={handleOnClose}>Submit</button>
         </div>
     </div>
